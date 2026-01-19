@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="" />
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/hi-ashup/EcoSort-app/blob/main/asset/ecoSort-app.png" />
 </div>
 
 # EcoSort: Intelligent Waste Classifier
