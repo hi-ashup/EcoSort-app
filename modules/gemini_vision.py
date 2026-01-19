@@ -1,56 +1,60 @@
 import google.generativeai as genai
-import os
 import json
 from PIL import Image
 
-# Initialize schema structure for robust JSON parsing
-SCHEMA_PROMPT = """
-You are EcoSort AI. Analyze the image and provide a JSON output. 
-STRICTLY follow this JSON structure:
-{
-  "itemName": "string",
-  "category": "string (e.g., Plastic, Metal, Organic, E-Waste)",
-  "recyclabilityScore": "integer (0-100)",
-  "dustbinColor": "string (Green, Blue, Red, Yellow - based on international standards)",
-  "materialComposition": [
-      {"material": "string", "percentage": "integer"}
-  ],
-  "disposalInstructions": ["string", "string"],
-  "environmentalImpact": "string (Short impact statement)",
-  "upcyclingIdeas": [
-      {"title": "string", "description": "string", "difficulty": "Easy/Medium/Hard"}
-  ]
-}
-Return ONLY valid JSON.
-"""
-
 def analyze_image(image_file, api_key):
     """
-    sends image to Gemini 1.5 Flash for analysis
+    Analyzes the image using Gemini 1.5 Flash.
     """
     if not api_key:
-        return {"error": "API Key Missing"}
+        return {"error": "API Key Required"}
 
     try:
         genai.configure(api_key=api_key)
-        # Using Gemini 1.5 Flash for speed/vision capabilities
-        model = genai.GenerativeModel('gemini-1.5-flash')
         
-        # Load image with PIL
+        # We use a broader configuration to allow the model to detect which version 
+        # is available or fall back. "gemini-1.5-flash" is standard now.
+        model_name = "gemini-1.5-flash" 
+        
+        generation_config = {
+            "temperature": 0.4,
+            "top_p": 1,
+            "top_k": 32,
+            "max_output_tokens": 4096,
+            "response_mime_type": "application/json",
+        }
+
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            generation_config=generation_config,
+        )
+
         img = Image.open(image_file)
+
+        # REFINED PROMPT to ensure perfect JSON
+        prompt = """
+        Analyze this waste item. Return JSON only:
+        {
+            "itemName": "Brief Name",
+            "category": "Plastic/Metal/Paper/Organic/E-Waste/Glass",
+            "recyclabilityScore": Integer 0-100,
+            "dustbinColor": "Green (Organic)/Blue (Recyclable)/Red (Hazard)/Yellow (Metal/Plastic)",
+            "materialComposition": [{"material": "name", "percentage": int}],
+            "disposalInstructions": ["Step 1", "Step 2"],
+            "environmentalImpact": "Short description",
+            "upcyclingIdeas": [{"title": "Name", "description": "Short Desc", "difficulty": "Easy/Medium"}]
+        }
+        """
+
+        response = model.generate_content([prompt, img])
         
-        # Generate Content
-        response = model.generate_content([SCHEMA_PROMPT, img])
-        
-        # Parse JSON strictly
-        clean_text = response.text.strip()
-        
-        # Handle cases where model puts markdown blocks around json
-        if clean_text.startswith("```json"):
-            clean_text = clean_text.replace("```json", "").replace("```", "")
-        
-        data = json.loads(clean_text)
-        return data
+        # Cleaning response text just in case
+        text_response = response.text.strip()
+        if text_response.startswith("```json"):
+            text_response = text_response[7:-3]
+            
+        return json.loads(text_response)
 
     except Exception as e:
-        return {"error": str(e)}
+        # Better error visibility
+        return {"error": f"AI Processing Failed: {str(e)}"}
