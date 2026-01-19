@@ -12,7 +12,7 @@
 ## 🌿 Core Objective
 EcoSort is a high-performance, aesthetically futuristic web application designed to combat waste mismanagement. Using advanced computer vision and the Gemini 3 Flash model, it classifies waste items in real-time and provides expert-level disposal, recycling, and upcycling intelligence.
 
-**Live Demo**: [EcoSort Live Web Application](https://your-deployment-link.vercel.app)
+**Live Demo**: [EcoSort Live Web Application](https://eco-sort-app-teal.vercel.app/)
 
 ---
 
@@ -41,7 +41,7 @@ EcoSort is a high-performance, aesthetically futuristic web application designed
 
 1.  **Clone the Repository**:
     ```bash
-    git clone https://github.com/username/ecosort.git
+    git clone https://github.com/hi-ashup/EcoSort-app.git
     cd ecosort
     ```
 
