@@ -1,0 +1,8 @@
+{
+  "name": "EcoSort: Intelligent Waste Classifier",
+  "description": "An AI-powered waste classification and disposal guide that uses computer vision to identify waste items and provides expert advice on recycling, composting, and upcycling.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
