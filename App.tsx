@@ -337,7 +337,7 @@ const App: React.FC = () => {
             <Box sx={{ p: 1, bgcolor: 'primary.main', borderRadius: 3, boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)' }}>
               <Leaf size={24} color="white" />
             </Box>
-            <Typography variant="h5" sx={{ letterSpacing: '-0.05em' }}>EcoScan</Typography>
+            <Typography variant="h5" sx={{ letterSpacing: '-0.05em' }}>EcoSort</Typography>
           </Box>
 
           <List sx={{ px: 0, flexGrow: 1 }}>
